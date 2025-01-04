@@ -39,22 +39,12 @@ public class AuthenticationsController {
         }
     }
 
-    
-    @DeleteMapping("/logoutOwner")
-    public ResponseEntity<String> logoutOwner() {
-        try {
-            ownerService.logoutOwner();
-            return new ResponseEntity<>("Logged out successfully!", HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("An error occurred during logout.", HttpStatus.INTERNAL_SERVER_ERROR);
-        }
-    }
 
-    @PutMapping("/updateOwner/{id}")
-    public ResponseEntity<String> updateOwner(@PathVariable Integer id, @RequestBody Owner owner) {
+    @PutMapping("/updateOwner/{email}")
+    public ResponseEntity<String> updateOwner(@PathVariable String email, @RequestBody Owner owner) {
         try {
-            ownerService.updateOwner(id, owner);
-            return new ResponseEntity<>("Owner details updated successfully at id: " + id, HttpStatus.OK);
+            ownerService.updateOwner(email, owner);
+            return new ResponseEntity<>("Owner details updated successfully at email: " + email, HttpStatus.OK);
         } catch (Exception e) {
             return new ResponseEntity<>("An error occurred while updating owner details", HttpStatus.INTERNAL_SERVER_ERROR);
         }
@@ -69,8 +59,29 @@ public class AuthenticationsController {
             return new ResponseEntity<>("An error occurred while removing owner", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
+    
+    @PostMapping("/loginOwner")
+    public ResponseEntity<String> loginOwner(@RequestBody Map<String, String> credentials) {
+        try {
+            String email = credentials.get("emailId");
+            String password = credentials.get("password");
+            Owner owner = ownerService.loginOwner(email, password);
+            return new ResponseEntity<>("Owner logged in successfully: " + owner.getName(), HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("Invalid login credentials", HttpStatus.UNAUTHORIZED);
+        }
+    }
 
-    // User Methods
+    @DeleteMapping("/logoutOwner")
+    public ResponseEntity<String> logoutOwner() {
+        try {
+            ownerService.logoutOwner();
+            return new ResponseEntity<>("Logged out successfully!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred during logout.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
+
     @PostMapping("/registerAsUser")
     public ResponseEntity<String> registerAsUser(@RequestBody User user) {
         try {
@@ -105,30 +116,28 @@ public class AuthenticationsController {
             return new ResponseEntity<>("An error occurred, please try again", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
-    @PostMapping("/loginOwner")
-    public ResponseEntity<String> loginOwner(@RequestBody Map<String, String> credentials) {
-        try {
-            String email = credentials.get("emailId");
-            String password = credentials.get("password");
-            Owner owner = ownerService.loginOwner(email, password);
-            return new ResponseEntity<>("Owner logged in successfully: " + owner.getName(), HttpStatus.OK);
-        } catch (Exception e) {
-            return new ResponseEntity<>("Invalid login credentials", HttpStatus.UNAUTHORIZED);
-        }
-    }
+  
 
     @PostMapping("/loginUser")
     public ResponseEntity<String> loginUser(@RequestBody Map<String, String> credentials) {
         try {
-            String email = credentials.get("email");
+            String email = credentials.get("emailId");
             String password = credentials.get("password");
             User user = userService.loginUser(email, password);
             return new ResponseEntity<>("User logged in successfully: " + user.getName(), HttpStatus.OK);
         } catch (Exception e) {
-            return new ResponseEntity<>(e.getMessage(), HttpStatus.UNAUTHORIZED);
+            return new ResponseEntity<>("Invalid Credentials: ", HttpStatus.UNAUTHORIZED);
         }
     }
     
-    
+    @DeleteMapping("/logoutUser")
+    public ResponseEntity<String> logoutUser() {
+        try {
+            userService.logoutUser();
+            return new ResponseEntity<>("Logged out successfully!", HttpStatus.OK);
+        } catch (Exception e) {
+            return new ResponseEntity<>("An error occurred during logout.", HttpStatus.INTERNAL_SERVER_ERROR);
+        }
+    }
 
 }

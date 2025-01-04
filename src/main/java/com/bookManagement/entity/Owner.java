@@ -8,14 +8,12 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.OneToMany;
-import jakarta.transaction.Transactional;
 import lombok.Getter;
 import lombok.Setter;
 
 @Getter
 @Setter
 @Entity
-@Transactional
 public class Owner {
     
 	@Id
@@ -33,6 +31,11 @@ public class Owner {
 
     @OneToMany(mappedBy = "owner")
     private List<Books> books;
-
+    
+    @OneToMany(mappedBy = "owner")
+    private List<User> users;
+    
+    @OneToMany(mappedBy = "owner") 
+    private List<BorrowBooksEntity> borrowedBooks;
     
 }

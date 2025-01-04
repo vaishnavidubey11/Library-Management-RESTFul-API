@@ -46,6 +46,7 @@ public class BooksController {
         	return new ResponseEntity<>("This book exists in the system" , HttpStatus.CONFLICT);
 		}
         catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>("An error occurred, please try again", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }
@@ -129,6 +130,7 @@ public class BooksController {
                 return new ResponseEntity<>("Unauthorized. Please register as an owner.", HttpStatus.BAD_REQUEST);
             }
         } catch (Exception e) {
+        	e.printStackTrace();
             return new ResponseEntity<>("An error occurred. Please try again.", HttpStatus.INTERNAL_SERVER_ERROR);
         }
     }

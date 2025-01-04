@@ -27,14 +27,18 @@ public class BorrowBooksEntity {
     @JoinColumn(name = "book_id", nullable = false)
     private Books bookInfo;
 
-    @SuppressWarnings("unused")
+    private LocalDateTime returnedOn = null; 
 	private LocalDateTime returnDate;
-    @SuppressWarnings("unused")
 	private LocalDateTime issueDate;
+	
+	@ManyToOne
+    @JoinColumn(name = "owner_id", nullable = false) 
+    private Owner owner;
 
     @Enumerated(EnumType.STRING)
     private BookStatus bookStatus;
-
+    
+    
 	
 
 }

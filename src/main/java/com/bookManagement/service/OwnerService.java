@@ -16,7 +16,7 @@ public class OwnerService {
     private OwnerRepository ownerRepository;
 
     @Autowired
-    private HttpSession httpSession;
+    private HttpSession httpSessionOwner;
 
 
     public Owner addUserAsOwner(Owner owner) {
@@ -26,8 +26,9 @@ public class OwnerService {
         System.out.println("Owner registered successfully");
 
         Owner savedOwner = ownerRepository.save(owner);
-        httpSession.setAttribute("OwnerName", savedOwner.getName());
-        httpSession.setAttribute("OwnerId", savedOwner.getId());
+        httpSessionOwner.setAttribute("OwnerName", savedOwner.getName());
+        httpSessionOwner.setAttribute("OwnerId", savedOwner.getId());
+        httpSessionOwner.setAttribute("email", savedOwner.getEmailId());
 
         return savedOwner;
     }
@@ -37,7 +38,7 @@ public class OwnerService {
     }
 
     public void logoutOwner() {
-        httpSession.invalidate();
+        httpSessionOwner.invalidate();
         System.out.println("Owner session invalidated");
     }
 
@@ -50,9 +51,11 @@ public class OwnerService {
         return false;
     }
 
-    public Owner updateOwner(int id, Owner updatedOwnerInfo) throws OwnerNotFoundException {
-        Owner existingOwner = ownerRepository.findById(id)
-            .orElseThrow(() -> new OwnerNotFoundException("Owner not found at id " + id));
+    public Owner updateOwner( String emailId, Owner updatedOwnerInfo) throws OwnerNotFoundException {
+        Owner existingOwner = ownerRepository.findByEmailId(emailId);
+          if(existingOwner == null) {
+        	  throw new OwnerNotFoundException();
+          }
 
         existingOwner.setName(updatedOwnerInfo.getName());
         existingOwner.setEmailId(updatedOwnerInfo.getEmailId());
@@ -68,10 +71,11 @@ public class OwnerService {
             throw new OwnerNotFoundException("Invalid email or password");
         }
 
-        httpSession.setAttribute("OwnerName", owner.getName());
-        httpSession.setAttribute("OwnerId", owner.getId());
+        httpSessionOwner.setAttribute("OwnerName", owner.getName());
+        httpSessionOwner.setAttribute("OwnerId", owner.getId());
         return owner;
     }
+    
     
   
     
